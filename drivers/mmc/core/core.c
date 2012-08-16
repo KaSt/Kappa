@@ -1389,6 +1389,7 @@ int mmc_suspend_host(struct mmc_host *host, pm_message_t state)
 				err = 0;
 			}
 		}
+		flush_delayed_work(&host->disable);
 	}
 	mmc_bus_put(host);
 
