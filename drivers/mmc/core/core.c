@@ -1080,8 +1080,6 @@ void mmc_detach_bus(struct mmc_host *host)
 
 	spin_unlock_irqrestore(&host->lock, flags);
 
-	mmc_power_off(host);
-
 	mmc_bus_put(host);
 }
 
