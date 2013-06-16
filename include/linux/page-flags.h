@@ -379,7 +379,7 @@ __SETPAGEFLAG(Head, compound)  __CLEARPAGEFLAG(Head, compound)
 
 static inline int PageHead(struct page *page)
 {
-   return ((page->flags & PG_head_tail_mask) == PG_head_mask);
+	return ((page->flags & PG_head_tail_mask) == PG_head_mask);
 }
 
 static inline int PageTail(struct page *page)
