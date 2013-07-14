@@ -191,7 +191,7 @@
 #define PMEM_KERNEL_EBI1_SIZE   0x600000
 
 #define PMIC_GPIO_INT		27
-#define PMIC_VREG_WLAN_LEVEL	2700
+#define PMIC_VREG_WLAN_LEVEL	2900
 #define PMIC_GPIO_SD_DET	22
 #ifdef CONFIG_PMIC_GPIO_25
 #define PMIC_GPIO_SD_POWER	25
@@ -4253,11 +4253,7 @@ static uint32_t wifi_setup_power(struct device *dv, unsigned int vdd)
 }
 
 static struct mmc_platform_data msm7x30_sdc3_data = {
-	#ifdef CONFIG_MSM_UNDERVOLT_WIFI
-	.ocr_mask = MMC_VDD_20_21 | MMC_VDD_21_22,
-	#else
-	.ocr_mask  = MMC_VDD_27_28 | MMC_VDD_28_29,
-	#endif
+	.ocr_mask = MMC_VDD_27_28 | MMC_VDD_28_29,
 	.translate_vdd = wifi_setup_power,
 	.mmc_bus_width = MMC_CAP_4_BIT_DATA | MMC_CAP_POWER_OFF_CARD,
 	.sdiowakeup_irq = MSM_GPIO_TO_INT(118),
