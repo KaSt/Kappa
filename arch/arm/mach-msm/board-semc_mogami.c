@@ -2018,11 +2018,7 @@ static struct sii9024_platform_data sii9024_platform_data = {
 static void semc_mogami_lcd_regulators_on(void)
 {
 	vreg_helper_on("gp7",1800);  /* L8 */
-	#ifdef CONFIG_MSM_UNDERVOLT_LCD
-	vreg_helper_on("gp6",2300);  /* L15 */
-	#else
 	vreg_helper_on("gp6",2850);  /* L15 */
-	#endif
 }
 
 /* Generic Power On function for SEMC mogami displays */
@@ -2804,11 +2800,7 @@ static struct bma250_platform_data bma250_platform_data = {
 #ifdef CONFIG_INPUT_APDS9702
 
 #define APDS9702_DOUT_GPIO   88
-#ifdef CONFIG_MSM_UNDERVOLT_PROXIMITY
-#define APDS9702_VDD_VOLTAGE 2400
-#else
 #define APDS9702_VDD_VOLTAGE 2900
-#endif
 #define APDS9702_WAIT_TIME   5000
 
 static int apds9702_gpio_setup(int request)
@@ -4370,18 +4362,9 @@ static void __init mogami_temp_fixups(void)
 
 static void __init shared_vreg_on(void)
 {
-	#ifdef CONFIG_MSM_UNDERVOLT_TOUCH
-	vreg_helper_on(VREG_L20, 2800);
-	#else
 	vreg_helper_on(VREG_L20, 3050);
-	#endif
 	vreg_helper_on(VREG_L10, 2600);
-	
-	#ifdef CONFIG_MSM_UNDERVOLT_LCD
-	vreg_helper_on(VREG_L15, 2300);
-	#else
 	vreg_helper_on(VREG_L15, 2900);
-	#endif
 	vreg_helper_on(VREG_L8, 1800);
 }
 
