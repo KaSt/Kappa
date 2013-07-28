@@ -66,7 +66,10 @@ enum {
 	MDP_IMGTYPE_LIMIT,
 	MDP_BGR_565 = MDP_IMGTYPE2_START,      /* BGR 565 planer */
 	MDP_FB_FORMAT,    /* framebuffer format */
-	MDP_IMGTYPE_LIMIT2 /* Non valid image type after this enum */
+	MDP_IMGTYPE_LIMIT2, /* Non valid image type after this enum */
+	MDP_Y_CR_CB_GH2V2,
+	MDP_Y_CR_CB_H2V2,
+	MDP_Y_CB_CR_H2V2
 };
 
 enum {

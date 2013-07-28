@@ -9,13 +9,6 @@ rm -fr /home/ka/build/ramdisk/kappa-ramdisk/system/lib/*
 echo "Copying Kernel drivers into Ramdisk (/system/lib)"
 find . -name *.ko | grep -v compat-wireless-wl12xx 
 find . -name *.ko | grep -v compat-wireless-wl12xx | xargs -i cp {} /home/ka/build/ramdisk/kappa-ramdisk/system/lib/ 
-mv /home/ka/build/ramdisk/kappa-ramdisk/system/lib/cifs.ko /home/ka/build/ramdisk/kappa-ramdisk/rek/modules
-mv /home/ka/build/ramdisk/kappa-ramdisk/system/lib/ntfs.ko /home/ka/build/ramdisk/kappa-ramdisk/rek/modules
-mv /home/ka/build/ramdisk/kappa-ramdisk/system/lib/fuse.ko /home/ka/build/ramdisk/kappa-ramdisk/rek/modules
-mv /home/ka/build/ramdisk/kappa-ramdisk/system/lib/hfsplus.ko /home/ka/build/ramdisk/kappa-ramdisk/rek/modules
-mv /home/ka/build/ramdisk/kappa-ramdisk/system/lib/usb-storage.ko /home/ka/build/ramdisk/kappa-ramdisk/rek/modules
-#mv /home/ka/build/ramdisk/kappa-ramdisk/system/lib/ext4.ko /home/ka/build/ramdisk/kappa-ramdisk/rek/modules
-#mv /home/ka/build/ramdisk/kappa-ramdisk/system/lib/jbd2.ko /home/ka/build/ramdisk/kappa-ramdisk/rek/modules
 
 
 echo "Copying Wifi drivers into Ramdisk (/system/lib/modules)"
@@ -35,7 +28,7 @@ cp ./net/mac80211/mac80211.ko /home/ka/build/ramdisk/kappa-ramdisk/rek/modules/
 cd /home/ka/build/ramdisk/kappa-ramdisk 
 echo "Packaging Ramdisk"
 rm ../kappa-ka-ramdisk.img
-find . | grep -v .git | cpio --quiet -H newc -o | lzma -7 > ../kappa-ka-ramdisk.img 
+find . | grep -v .git | cpio --quiet -H newc -o | gzip > ../kappa-ka-ramdisk.img 
 cd /home/ka/build/Kappa/bootimg 
 echo "Making image $1"
 mkbootimg --kernel ../arch/arm/boot/zImage --ramdisk ../../ramdisk/kappa-ka-ramdisk.img --base 0x00200000 -o $1
