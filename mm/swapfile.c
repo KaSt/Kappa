@@ -2268,3 +2268,4 @@ int valid_swaphandles(swp_entry_t entry, unsigned long *offset)
 	 */
 	*offset = ++toff;
 	return nr_pages? ++nr_pages: 0;
+}
