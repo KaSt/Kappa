@@ -403,7 +403,7 @@ int mdp4_overlay_play_wait(struct fb_info *info,
 int mdp4_overlay_play(struct fb_info *info, struct msmfb_overlay_data *req,
 				struct file **pp_src_file);
 int mdp4_overlay_refresh(struct fb_info *info, int ndx);
-struct mdp4_overlay_pipe *mdp4_overlay_pipe_alloc(int ptype);
+struct mdp4_overlay_pipe *mdp4_overlay_pipe_alloc(int ptype, boolean usevg);
 void mdp4_overlay_pipe_free(struct mdp4_overlay_pipe *pipe);
 void mdp4_overlay_dmap_cfg(struct msm_fb_data_type *mfd, int lcdc);
 void mdp4_overlay_dmap_xy(struct mdp4_overlay_pipe *pipe);

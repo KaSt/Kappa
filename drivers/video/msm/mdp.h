@@ -47,6 +47,13 @@
 
 #include "msm_fb_panel.h"
 
+extern uint32 mdp_hw_revision;
+
+#define MDP4_REVISION_V1		0
+#define MDP4_REVISION_V2		1
+#define MDP4_REVISION_V2_1	2
+#define MDP4_REVISION_NONE	0xffffffff
+
 #ifdef BIT
 #undef BIT
 #endif
@@ -205,11 +212,10 @@ typedef struct mdp_ibuf_s {
 struct mdp_dma_data {
 	boolean busy;
 	boolean waiting;
-	struct mutex ov_mutex;
-	struct semaphore mutex;
-	struct completion comp;
 	struct semaphore ov_sem;
+	struct semaphore mutex;
 	struct semaphore pending_pipe_sem;
+	struct completion comp;
 };
 
 #define MDP_CMD_DEBUG_ACCESS_BASE   (MDP_BASE+0x10000)
@@ -669,12 +675,21 @@ void mdp_enable_irq(uint32 term);
 void mdp_disable_irq(uint32 term);
 void mdp_disable_irq_nosync(uint32 term);
 int mdp_get_bytes_per_pixel(uint32_t format);
-int mdp_set_core_clk(u32 rate);
 
 #ifdef MDP_HW_VSYNC
 void mdp_hw_vsync_clk_enable(struct msm_fb_data_type *mfd);
 void mdp_hw_vsync_clk_disable(struct msm_fb_data_type *mfd);
+void mdp_vsync_clk_disable(void);
+void mdp_vsync_clk_enable(void);
 #endif
 
+#ifdef CONFIG_DEBUG_FS
+int mdp_debugfs_init(void);
+#endif
+
+
+
+
 void mdp_dma_s_update(struct msm_fb_data_type *mfd);
+int mdp_set_core_clk(uint16 perf_level);
 #endif /* MDP_H */
