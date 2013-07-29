@@ -30,6 +30,8 @@
 
 #include "mm.h"
 
+typedef u32 pteval_t;
+
 DEFINE_PER_CPU(struct mmu_gather, mmu_gathers);
 
 /*

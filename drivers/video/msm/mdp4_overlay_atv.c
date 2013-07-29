@@ -67,14 +67,13 @@ int mdp4_atv_on(struct platform_device *pdev)
 
 	if (atv_pipe == NULL) {
 		ptype = mdp4_overlay_format2type(mfd->fb_imgType);
-		pipe = mdp4_overlay_pipe_alloc(ptype, FALSE);
+		pipe = mdp4_overlay_pipe_alloc(ptype);
 		if (pipe == NULL)
 			return -EBUSY;
 		pipe->pipe_used++;
 		pipe->mixer_stage  = MDP4_MIXER_STAGE_BASE;
 		pipe->mixer_num  = MDP4_MIXER1;
 		pipe->src_format = mfd->fb_imgType;
-		mdp4_overlay_panel_mode(pipe->mixer_num, MDP4_PANEL_ATV);
 		mdp4_overlay_format2pipe(pipe);
 
 		atv_pipe = pipe; /* keep it */
@@ -166,7 +165,7 @@ void mdp4_atv_overlay(struct msm_fb_data_type *mfd)
 	buf += fbi->var.xoffset * bpp +
 		fbi->var.yoffset * fbi->fix.line_length;
 
-	down(&mfd->dma->ov_sem);
+	mutex_lock(&mfd->dma->ov_mutex);
 
 	pipe = atv_pipe;
 	pipe->srcp0_addr = (uint32) buf;
@@ -189,6 +188,6 @@ void mdp4_atv_overlay(struct msm_fb_data_type *mfd)
 	mdp_disable_irq(MDP_OVERLAY1_TERM);
 
 	mdp4_stat.kickoff_atv++;
-	mdp4_overlay_resource_release();
-	up(&mfd->dma->ov_sem);
+
+	mutex_unlock(&mfd->dma->ov_mutex);
 }
