@@ -190,7 +190,7 @@ struct stable_node {
 	struct hlist_head hlist;
 	unsigned long kpfn;
 	u32 hash_max; /* if ==0 then it's not been calculated yet */
-	//struct vm_area_struct *old_vma;
+	struct vm_area_struct *old_vma;
 	struct list_head all_list; /* in a list for all stable nodes */
 };
 
