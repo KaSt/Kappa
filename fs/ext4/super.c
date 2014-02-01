@@ -345,7 +345,6 @@ void ext4_error(struct super_block *sb, const char *function,
 	vprintk(fmt, args);
 	printk("\n");
 	va_end(args);
-	save_error_info(sb, function, line);
 
 	ext4_handle_error(sb);
 }
