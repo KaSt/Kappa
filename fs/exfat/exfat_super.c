@@ -240,7 +240,7 @@ static struct inode *exfat_build_inode(struct super_block *sb, FILE_ID_T *fid, l
 static void exfat_detach(struct inode *inode);
 static void exfat_attach(struct inode *inode, loff_t i_pos);
 static inline unsigned long exfat_hash(loff_t i_pos);
-static int exfat_write_inode(struct inode *inode, struct writeback_control *wbc);
+static int exfat_write_inode(struct inode *inode, int wait);
 static void exfat_write_super(struct super_block *sb);
 
 static void __lock_super(struct super_block *sb)
@@ -470,19 +470,17 @@ return -ENOTTY; /* Inappropriate ioctl for device */
 }
 }
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
-static int exfat_file_fsync(struct file *filp, int datasync)
+static int exfat_file_fsync(struct file *filp,  struct dentry *dentry, int datasync)
 {
 struct inode *inode = filp->f_mapping->host;
 struct super_block *sb = inode->i_sb;
 int res, err;
 
-res = generic_file_fsync(filp, datasync);
+res = simple_fsync(filp, dentry, datasync);
 err = FsSyncVol(sb, 1);
 
 return res ? res : err;
 }
-#endif
 
 const struct file_operations exfat_dir_operations = {
 .llseek = generic_file_llseek,
@@ -492,13 +490,8 @@ const struct file_operations exfat_dir_operations = {
 #else
 .readdir = exfat_readdir,
 #endif
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
 .ioctl = exfat_generic_ioctl,
 .fsync = exfat_file_fsync,
-#else
-.unlocked_ioctl = exfat_generic_ioctl,
-.fsync = generic_file_fsync,
-#endif
 };
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,00)
@@ -1628,7 +1621,7 @@ return inode;
 
 static int exfat_sync_inode(struct inode *inode)
 {
-return exfat_write_inode(inode, NULL);
+return exfat_write_inode(inode, 0);
 }
 
 static struct inode *exfat_alloc_inode(struct super_block *sb) {
@@ -1653,7 +1646,7 @@ EXFAT_I(inode)->target = NULL;
 kmem_cache_free(exfat_inode_cachep, EXFAT_I(inode));
 }
 
-static int exfat_write_inode(struct inode *inode, struct writeback_control *wbc)
+static int exfat_write_inode(struct inode *inode, int wait)
 {
 struct super_block *sb = inode->i_sb;
 struct exfat_sb_info *sbi = EXFAT_SB(sb);
@@ -1844,16 +1837,10 @@ const struct super_operations exfat_sops = {
 .alloc_inode = exfat_alloc_inode,
 .destroy_inode = exfat_destroy_inode,
 .write_inode = exfat_write_inode,
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
 .delete_inode = exfat_delete_inode,
 .clear_inode = exfat_clear_inode,
-#else
-.evict_inode = exfat_evict_inode,
-#endif
 .put_super = exfat_put_super,
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,7,0)
 .write_super = exfat_write_super,
-#endif
 .sync_fs = exfat_sync_fs,
 .statfs = exfat_statfs,
 .remount_fs = exfat_remount,
