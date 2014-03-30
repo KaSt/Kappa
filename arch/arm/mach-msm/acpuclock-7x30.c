@@ -435,7 +435,7 @@ void __init msm_acpu_clock_init(struct msm_acpu_clock_platform_data *clkdata)
 	cpufreq_frequency_table_get_attr(freq_table, smp_processor_id());
 
 	for (s = acpu_freq_tbl; s->acpu_clk_khz != 0; s++) ; 
-	s--; 
+	s = s - 5; 
 	acpuclk_set_rate(0, s->acpu_clk_khz, SETRATE_CPUFREQ); 
 	pr_info("ACPU init done, clock rate now : %d\n", drv_state.current_speed->acpu_clk_khz);
 
