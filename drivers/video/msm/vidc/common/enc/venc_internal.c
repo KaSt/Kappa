@@ -602,7 +602,9 @@ u32 vid_enc_set_get_profile_level(struct video_client_ctx *client_ctx,
 		case VEN_LEVEL_H264_3p2:
 			level.level = VCD_LEVEL_H264_3p2;
 			break;
-
+		case VEN_LEVEL_H264_4:
+			level.level = VCD_LEVEL_H264_4;
+			break;
 		case VEN_LEVEL_H263_10:
 			level.level = VCD_LEVEL_H263_10;
 			break;
@@ -706,7 +708,7 @@ u32 vid_enc_set_get_profile_level(struct video_client_ctx *client_ctx,
 				profile_level->level = VEN_LEVEL_H264_3p2;
 				break;
 			case VCD_LEVEL_H264_4:
-				status = false;
+				profile_level->level = VEN_LEVEL_H264_4;
 				break;
 			case VCD_LEVEL_H263_10:
 				profile_level->level = VEN_LEVEL_H263_10;
