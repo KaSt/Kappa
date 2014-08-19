@@ -118,6 +118,7 @@ struct ehci_hcd {			/* one per controller */
 	struct timer_list	watchdog;
 	unsigned long		actions;
 	unsigned		random_frame;
+	unsigned		stamp;
 	unsigned long		next_statechange;
 	ktime_t			last_periodic_enable;
 	u32			command;
