@@ -1,6 +1,15 @@
 #!/bin/bash
 
+if [ ! -e kappa.config ]
+then   
+        echo "Please create a kappa.config file in the repo dir."
+        echo "Check kappa.config.sample for pointers"
+        exit
+fi
+
+source kappa.config
+
 cd $KAPPA_HOME
-ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER/bin/arm-eabi-  make menuconfig
+ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER  make menuconfig
 echo "Done!"
 

@@ -12,6 +12,6 @@ echo "Building the WLan Driver"
 cd "$KAPPA_HOME/compat-wireless-wl12xx"
 
 ./scripts/driver-select wl12xx
-CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER/bin/arm-eabi-  KLIB=$KAPPA_HOME KLIB_BUILD=$KAPPA_HOME make -j8 
-find . -name *.ko | xargs -i $KAPPA_COMPILER/bin/arm-eabi-strip --strip-debug  {}
+CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER  KLIB=$KAPPA_HOME KLIB_BUILD=$KAPPA_HOME make -j8 
+find . -name *.ko | xargs -i $KAPPA_COMPILERstrip --strip-debug  {}
 

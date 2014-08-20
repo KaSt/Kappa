@@ -19,5 +19,5 @@ fi
 
 
 cd $KAPPA_HOME
-ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER/bin/arm-eabi-  make ka_$1_defconfig
+ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER  make ka_$1_defconfig
 
