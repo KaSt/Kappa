@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/ka/build/Kappa
-ARCH=arm CROSS_COMPILE=/home/ka/build/linaro/android-toolchain-eabi/bin/arm-eabi-  make menuconfig
+cd $KAPPA_HOME
+ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER/bin/arm-eabi-  make menuconfig
 echo "Done!"
 

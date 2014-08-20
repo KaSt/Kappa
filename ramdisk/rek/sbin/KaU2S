@@ -1,0 +1,10 @@
+#!/rek/sbin/busybox sh
+PATH=$PATH:/system/bin/:/system/xbin/
+
+/rek/sbin/busybox insmod /rek/modules/usbserial.ko
+/rek/sbin/busybox insmod /rek/modules/ch341.ko                                                                           
+/rek/sbin/busybox insmod /rek/modules/ti_usb_3410_5052.ko                                                                
+/rek/sbin/busybox insmod /rek/modules/cp210x.ko                                                                          
+/rek/sbin/busybox insmod /rek/modules/modules/pl2303.ko                                                                  
+
+

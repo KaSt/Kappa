@@ -128,3 +128,7 @@ include/linux/utsrelease.h
 utsrelease.h
 compat-wireless-wl12xx
 firmware/*
+include/asm-arm/asm-offsets.h
+kappa-ka-ramdisk.img
+kappa.config
+

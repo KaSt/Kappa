@@ -1,0 +1,6 @@
+#!/rek/sbin/busybox sh
+PATH=$PATH:/system/bin/:/system/xbin/
+
+busybox echo 100 > /sys/kernel/mm/uksm/sleep_millisecs
+busybox echo 1 > /sys/kernel/mm/uksm/run
+

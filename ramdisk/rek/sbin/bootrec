@@ -1,0 +1,188 @@
+#!/rek/sbin/busybox sh
+export PATH=/sbin/:/rek/sbin/:$PATH
+
+busybox mount -o remount,rw /
+echo "Starting..." > /rek/logs/kaboot.txt
+echo "Initialising extra debug log..." >/data/kalog.txt
+#Copying Kappa bootanimation to system/media - Disabled in public version
+#echo "Copying Kappa bootanimation to system/media" >> /rek/logs/kaboot.txt
+#mount -o remount,rw /system
+#busybox cp /rek/res/bootanimation.zip /system/media/
+
+#Adding symlink to kamenu if not present
+if [ ! -e /system/bin/kamenu ] 
+then
+	echo "Symlinking kamenu to /system/bin/kamenu" >> /rek/logs/kaboot.txt
+	busybox mount -o remount,rw /system
+	busybox ln -s /rek/sbin/kamenu /system/bin/kamenu
+	busybox mount -o remount,ro /system
+fi
+	  
+#Setup Wifi if on Rom's first boot
+echo "Checking Wifi on first Rom boot" >> /rek/logs/kaboot.txt
+if [ ! -e /data/etc/wifi/fw ] 
+then
+        echo "Wifi setup is needed" >> /rek/logs/kaboot.txt
+	
+	busybox insmod /rek/modules/compat.ko 2>>/rek/logs/kaboot.txt
+	busybox insmod /rek/modules/compat_firmware_class.ko 2>>/rek/logs/kaboot.txt
+	busybox insmod /rek/modules/cfg80211.ko 2>>/rek/logs/kaboot.txt
+	busybox insmod /rek/modules/mac80211.ko 2>>/rek/logs/kaboot.txt
+
+	if [ -e /system/bin/nvimport ]
+	then
+		/system/bin/nvimport  2>>/rek/logs/kaboot.txt
+		if [ -e /data/etc/wifi/fw ] 
+		then
+			/system/bin/wlan_calibrator set upd_nvs /etc/tiwlan.ini /data/etc/wifi/fw 2>>/rek/logs/kaboot.txt
+			if [ -e /data/etc/wifi/wl1271-nvs.bin ]
+			then
+				busybox mount -o remount,rw /system
+				busybox mkdir -p /system/etc/firmware/ti-connectivity/
+				busybox ln -sf /data/etc/wifi/wl1271-nvs.bin /system/etc/firmware/ti-connectivity/wl1271-nvs.bin
+				if [ -e /system/etc/firmware/ti-connectivity/wl1271-nvs.bin ]
+				then
+					echo "Wifi setup : Done" >> /rek/logs/kaboot.txt
+				else
+					echo "Wifi setup : Failed" >> /rek/logs/kaboot.txt
+				fi
+				busybox mount -o remount,ro /system
+			else
+				echo "Wifi setup : wlan_calibrator failed" >> /rek/logs/kaboot.txt
+			fi
+		else
+			echo "Wifi setup : nvimport failed" >> /rek/logs/kaboot.txt
+		fi
+	else
+		echo "Wifi setup : nvimport not found" >> /rek/logs/kaboot.txt
+	fi
+	
+	busybox rmmod mac80211 2>>/rek/logs/kaboot.txt
+	busybox rmmod cfg80211 2>>/rek/logs/kaboot.txt
+	busybox rmmod compat_firmware_class 2>>/rek/logs/kaboot.txt
+	busybox rmmod compat 2>>/rek/logs/kaboot.txt
+else
+	echo "Wifi setup is not needed" >> /rek/logs/kaboot.txt
+fi
+
+
+echo "Setting defaults at boot" >> /rek/logs/kaboot.txt
+setprop service.adb.root 1
+# fixing CPU clocks to avoid issues in recovery
+echo 1017600 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+echo 249600 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+echo 0 > /sys/class/android_usb/android0/enable
+echo 0FCE > /sys/class/android_usb/android0/idVendor
+echo 6166 > /sys/class/android_usb/android0/idProduct
+echo mass_storage,adb > /sys/class/android_usb/android0/functions
+echo 1 > /sys/class/android_usb/android0/enable
+
+
+# Use frandom instead of stock ramdom/urandom
+# Maybe not now
+#busybox chmod 0666 /dev/frandom
+#busybox chmod 0666 /dev/erandom
+#busybox mv /dev/random /dev/random_old
+#busybox ln -s /dev/frandom /dev/random
+#busybox mv /dev/urandom /dev/urandom_old
+#busybox ln -s /dev/erandom /dev/urandom
+#cho "Done Frandom setup" >> /rek/logs/kaboot.txt
+
+# Use frandom Havege of stock ramdom/urandom                                                                                          
+# Maybe not now                                                                                                                        
+busybox mv /dev/random /dev/random_old                                                                                                
+busybox ln -s /dev/hrandom0 /dev/random                                                                                                
+busybox mv /dev/urandom /dev/urandom_old                                                                                              
+busybox ln -s /dev/hrandom0 /dev/urandom                                                                                               
+busybox chmod 0666 /dev/random
+busybox chmod 0666 /dev/urandom
+cho "Done Havege setup" >> /rek/logs/kaboot.txt   
+
+
+stop adbd
+echo "Only do the Led trick if not asked to reboot in recovery" >> /rek/logs/kaboot.txt 
+# Don't wait on keypress if phone was told to reboot in recovery
+if [ ! -e /cache/recovery/boot ]
+then
+	echo "Doing the Led recovery trick" >> /rek/logs/kaboot.txt 
+	# trigger purple LED                                                                                               
+	echo '255' > /sys/class/leds/blue/brightness
+	echo '255' > /sys/class/leds/red/brightness
+	echo '0' > /sys/class/leds/green/brightness
+	# trigger vibrator
+        echo '150'  > /sys/class/timed_output/vibrator/enable
+
+	# trigger button-backlight
+	echo '255' > /sys/class/leds/button-backlight/brightness
+	cat /dev/input/event2 > /dev/keycheck&
+	sleep 3
+
+	# Leds off
+	echo '0' > /sys/class/leds/blue/brightness
+	echo '0' > /sys/class/leds/red/brightness
+	echo '0' > /sys/class/leds/green/brightness	
+else
+	echo "Not doing the Led recovery trick" >> /rek/logs/kaboot.txt
+fi
+
+# trigger button-backlight
+echo '0' > /sys/class/leds/button-backlight/brightness
+#busybox kill -9 $!
+
+if [ -s /dev/keycheck -o -e /cache/recovery/boot ]
+then
+  echo "Booting into recovery" >> /rek/logs/kaboot.txt 
+  # trigger Blue light to show we're starting recovery
+  echo '255' > /sys/class/leds/blue/brightness
+  echo 0 > /sys/class/android_usb/android0/enable
+  echo 0fce > /sys/class/android_usb/android0/idVendor 
+  echo 614f > /sys/class/android_usb/android0/idProduct
+  echo "mass_storage,adb" > /sys/class/android_usb/android0/functions
+  echo 1 > /sys/class/android_usb/android0/enable
+  stop adbd
+
+  #Remove call to recovery if present
+  if [ -e /cache/recovery/boot ]
+  then
+  	rm /cache/recovery/boot
+  fi
+
+  #Prepary system for recovery boot
+  busybox mount -o remount,rw rootfs /
+  busybox umount -l /system
+  busybox umount -l /data
+  busybox umount -l /cache
+  busybox umount -l /mnt/sdcard
+  rm -r /sdcard
+  rm -r /not/sdcard
+  mkdir /sdcard
+  mkdir /tmp
+  rm /etc
+  mkdir /etc
+  cp /rek/res/recovery.fstab /etc/recovery.fstab
+  busybox mount /dev/block/mmcblk0p1 /sdcard
+  mkdir -p /res/images
+  cp /rek/res/images/* /res/images/
+  echo '0' > /sys/class/leds/blue/brightness
+  
+  #Start the recovery binary
+  /sbin/recovery&
+else
+ echo "Calling normal boot" >> /rek/logs/kaboot.txt
+ busybox mount -o remount,ro /
+fi
+
+echo "Now booting normally" >> /data/kalog.txt
+
+#Start the normal chargemon (battery charging binary)
+
+if [ -e /system/bin/chargemon ]
+then
+  echo "I can see chargemon" >>/data/kalog.txt
+else
+  echo "Where is chargemon???" >>/data/kalog.txt
+fi
+
+exec /rek/sbin/chargemon
+echo "After chargemon call" >>/data/kalog.txt
+

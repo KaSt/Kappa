@@ -1,0 +1,17 @@
+#!/rek/sbin/busybox sh
+PATH=$PATH:/system/bin/:/system/xbin/
+
+#if [ ! -e /system/etc/adblock ] 
+#then
+#	/rek/sbin/busybox wget "http://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&startdate%5Bday%5D=&startdate%5Bmonth%5D=&startdate%5Byear%5D=&mimetype=plaintext" -O /system/etc/adblock
+#fi
+cp /rek/res/resolv.conf /system/etc/resolv.conf
+
+if [  -e /system/etc/adblock ]
+then
+	ADBLOCK=/system/etc/adblock
+else
+	ADBLOCK=/rek/res/adblock
+fi
+
+dnsd -s -d -c $ADBLOCK

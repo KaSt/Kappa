@@ -1,9 +1,17 @@
 #!/bin/bash
 
+if [ ! -e kappa.config ]
+then   
+        echo "Please create a kappa.config file in the repo dir."
+        echo "Check kappa.config.sample for pointers"
+        exit
+fi
+source kappa.config
+
 echo "Building the WLan Driver"
-cd /home/ka/build/Kappa/compat-wireless-wl12xx
-#ARCH=arm CROSS_COMPILE=/home/ka/build/linaro/android-toolchain-eabi/bin/arm-eabi-  KLIB=/home/ka/build/Kappa KLIB_BUILD=/home/ka/build/Kappa make clean
+cd "$KAPPA_HOME/compat-wireless-wl12xx"
+
 ./scripts/driver-select wl12xx
-ARCH=arm CROSS_COMPILE=/home/ka/build/linaro/android-toolchain-eabi/bin/arm-eabi-  KLIB=/home/ka/build/Kappa KLIB_BUILD=/home/ka/build/Kappa make -j8 
-find . -name *.ko | xargs -i /home/ka/build/linaro/android-toolchain-eabi/bin/arm-eabi-strip --strip-debug  {}
+CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER/bin/arm-eabi-  KLIB=$KAPPA_HOME KLIB_BUILD=$KAPPA_HOME make -j8 
+find . -name *.ko | xargs -i $KAPPA_COMPILER/bin/arm-eabi-strip --strip-debug  {}
 

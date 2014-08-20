@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ ! -e kappa.config ]
+then                                                                                                                                   
+        echo "Please create a kappa.config file in the repo dir."
+        echo "Check kappa.config.sample for pointers"                                                                                  
+        exit                                                                                                                           
+fi                                                                                                                                     
+
+source kappa.config                                                                                                                 
+
+
+if [ "$1" == "" ]
+then
+	echo "Please provide the device name"
+        echo "Valid devices: smultron mango satsuma coconut"
+	exit
+fi
+
+
+cd $KAPPA_HOME
+ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER/bin/arm-eabi-  make ka_$1_defconfig
+

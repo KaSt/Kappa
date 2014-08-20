@@ -1,0 +1,5 @@
+#!/rek/sbin/busybox sh
+PATH=$PATH:/system/bin/:/system/xbin/
+
+echo "1" > /sys/kernel/lowmemorykiller/auto_detect
+
