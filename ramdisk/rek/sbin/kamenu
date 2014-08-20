@@ -1,0 +1,777 @@
+#!/rek/sbin/busybox sh
+
+#KaMenu Script : Kappa Kernel by Ka. 2013
+
+PATH=$PATH:/system/bin/:/system/xbin/:/sbin
+
+cifs()
+{
+	${supath}su -c "/sbin/busybox mount -o remount,rw /system"
+	if [[ $cifsison = 1 ]]; then
+		${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaCIFS"
+		echo "CIFS Disabled"
+	else
+		${supath}su -c "/rek/sbin/busybox cp /rek/sbin/KaCIFS /system/etc/init.d"
+		${supath}su -c "insmod /rek/modules/cifs.ko"
+		echo "CIFS Enabled"
+	fi
+	${supath}su -c "/sbin/busybox mount -o remount,ro /system"
+}		
+
+ntfs()
+{
+        ${supath}su -c "/sbin/busybox mount -o remount,rw /system"
+        if [[ $ntfsison = 1 ]]; then
+                ${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaNTFS"
+                echo "NTFS Disabled"
+        else
+                ${supath}su -c "/rek/sbin/busybox cp /rek/sbin/KaNTFS /system/etc/init.d"
+                ${supath}su -c "insmod /rek/modules/ntfs.ko"
+                echo "NTFS Enabled"
+        fi
+        ${supath}su -c "/sbin/busybox mount -o remount,ro /system"
+}
+
+fuse()
+{
+        ${supath}su -c "/sbin/busybox mount -o remount,rw /system"
+        if [[ $fuseison = 1 ]]; then
+                ${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaFUSE"
+                echo "FUSE Disabled"
+        else
+                ${supath}su -c "/rek/sbin/busybox cp /rek/sbin/KaFUSE /system/etc/init.d"
+                ${supath}su -c "insmod /rek/modules/fuse.ko"
+                echo "FUSE Enabled"
+        fi
+        ${supath}su -c "/sbin/busybox mount -o remount,ro /system"
+}
+
+hfsx()
+{
+        ${supath}su -c "/sbin/busybox mount -o remount,rw /system"
+        if [[ $hfsxison = 1 ]]; then
+                ${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaHFSX"
+                echo "HFS+ Disabled"
+        else   
+                ${supath}su -c "/rek/sbin/busybox cp /rek/sbin/KaHFSX /system/etc/init.d"
+                ${supath}su -c "insmod /rek/modules/hfsplus.ko"
+                echo "HFS+ Enabled"
+        fi
+        ${supath}su -c "/sbin/busybox mount -o remount,ro /system"
+}
+
+
+otg()
+{
+        ${supath}su -c "/sbin/busybox mount -o remount,rw /system"
+        if [[ $otgison = 1 ]]; then
+                ${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaOTG"
+                echo "OTG Disabled"
+        else   
+                ${supath}su -c "/rek/sbin/busybox cp /rek/sbin/KaOTG /system/etc/init.d"
+                ${supath}su -c "insmod /rek/modules/usb-storage.ko"
+                echo "OTG Enabled"
+        fi
+        ${supath}su -c "/sbin/busybox mount -o remount,ro /system"
+}
+
+u2s()                                                                                                                                  
+{                                                                                                                                      
+        ${supath}su -c "/sbin/busybox mount -o remount,rw /system"
+        if [[ $serison = 1 ]]; then
+                ${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaU2S"
+                echo "U2S Disabled"
+        else
+                ${supath}su -c "/rek/sbin/busybox cp /rek/sbin/KaU2S /system/etc/init.d"
+                ${supath}su -c "insmod /rek/modules/usbserial.ko"
+		${supath}su -c "insmod /rek/modules/ch341.ko"
+		${supath}su -c "insmod /rek/modules/ti_usb_3410_5052.ko"
+		${supath}su -c "insmod /rek/modules/cp210x.ko"
+		${supath}su -c "insmod /rek/modules/pl2303.ko"
+                echo "U2S Enabled"
+        fi                                                                                                                             
+        ${supath}su -c "/sbin/busybox mount -o remount,ro /system" 
+}  
+
+if [ -e /system/bin/su ]; then
+	supath="/system/bin/"
+elif [ -e /system/xbin/su ]; then
+	supath="/system/xbin/"
+else
+	supath=
+fi
+
+
+checkstatus()
+{
+	if [ -e /system/etc/init.d/KaCIFS ]; then
+		cifsison=1
+	else
+		cifsison=0
+	fi
+	
+	if [ -e /system/etc/init.d/KaNTFS ]; then
+	        ntfsison=1
+	else
+	        ntfsison=0
+	fi
+	
+	if [ -e /system/etc/init.d/KaFUSE ]; then
+	        fuseison=1
+	else
+	        fuseison=0
+	fi
+
+        if [ -e /system/etc/init.d/KaHFSX ]; then
+                hfsxison=1
+        else
+                hfsxison=0
+        fi
+
+        if [ -e /system/etc/init.d/KaOTG ]; then
+                otgison=1
+        else
+                otgison=0
+        fi
+
+        if [ -e /system/etc/init.d/KaU2S ]; then    
+                serison=1  
+        else
+                serison=0
+        fi
+
+}
+
+selvdd()
+{
+        busybox clear
+        while :; do
+                VDD=/sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
+                busybox echo -e "[*] Current VDD Levels:\n";
+                busybox cat $VDD
+                busybox echo ""
+                busybox echo -n "[Q] Choose frequency to modify: "; read FREQ
+                current_vdd=`busybox grep "$FREQ" $VDD | busybox cut -d':' -f2 | busybox sed -e 's/^[ \t]*//'`
+
+                # if user enters q|Q,r|R then exit loop and return to performance menu
+                if [[ $FREQ = "Q" || $FREQ == "q" || $FREQ == "r" || $FREQ == "R" ]]; then
+                        busybox clear
+                        busybox echo "[$FREQ] Exiting ..."
+                        busybox sleep 1
+                        break
+                fi
+
+                valid_freq=`busybox grep -F "$FREQ" $VDD | busybox cut -d':' -f1 | busybox sed -e 's/^[ \t]*//'`
+
+                if [[ "$valid_freq" -eq "$FREQ" ]] && [ "`busybox echo "$FREQ" | busybox grep -E "^[0-9]+$"`" ]; then
+                        freqvdd=`busybox grep "$FREQ" $VDD | busybox cut -d':' -f2 | busybox sed -e 's/^[ \t]*//'`
+
+
+                        # show current voltage for that frequency
+                        busybox echo "[*] Current voltage for $FREQ is $freqvdd"
+                        busybox echo ""
+                        # enter new frequency
+                        busybox echo -n "[Q] Enter new voltage for $FREQ: "; read newvdd
+
+                                # check if the vdd entered is a number and in valid range.
+                                checkit=`busybox echo $newvdd | busybox tr -dc '[:digit:]'`
+                                if [[ "$checkit" = "$newvdd" ]] && [[ "$(($newvdd%25))" -eq 0 && "$newvdd" -ge 800 && "$newvdd" -le 1350 ]]; then
+                                        busybox sleep 1
+                                else
+                                        busybox clear
+                                        busybox echo "[E] $newvdd is an invalid voltage"
+                                        busybox sleep 1
+                                        busybox echo "[*] Please try again"
+                                        busybox sleep 2
+                                        busybox clear
+                                        selvddcon
+                                fi
+
+
+                                # replace old voltage with new one
+                                busybox echo "$FREQ $newvdd" > $VDD
+                                busybox echo ""
+                                busybox echo "[Q] Do you want to set this value at every"
+                                busybox echo "    boot by KaVDD init.d script"
+                                busybox echo ""
+                                busybox echo "       (default = NO       y = create init.d)"
+                                read reup
+
+                                if [[ "$reup" == "y" ]] || [[ "$reup" == "Y" ]]; then
+                                        busybox clear
+                                        ${supath}su -c "/sbin/busybox mount -o remount rw /system"
+
+                                        if [[ -f /system/etc/init.d/KaVDD ]]; then
+                                                busybox echo -e "\n[*] Adding values to current KaVDD"
+
+                                                sleep 1
+
+                                                # check if the last frequency has a value set already
+                                                if [ "`busybox cat /system/etc/init.d/KaVDD | busybox sed -n "s/\\busybox echo '$FREQ \([0-9]*\)' > \\$VDD/\1/gp" | busybox tr -dc "[[:digit:]]"`" ]; then
+                                                        busybox echo -e "\n[W] You have already set a value for $FREQ"
+                                                        busybox sleep 1
+                                                        busybox echo ""
+                                                        busybox sed -i "s/\busybox echo '$FREQ [0-9]*' > \$VDD/\busybox echo '$FREQ $newvdd' > \$VDD/g" /system/etc/init.d/KaVDD
+                                                        busybox echo "[*] Old value has been replaced..."
+                                                        busybox sleep 2
+                                                        busybox clear
+                                                else
+                                                        busybox echo "\busybox echo '$FREQ $newvdd' > \$VDD" >> /system/etc/init.d/KaVDD
+                                                fi
+
+                                        else
+                                                busybox echo "#!/sbin/busybox sh" >> /system/etc/init.d/KaVDD
+                                                busybox echo "BB=busybox" >> /system/etc/init.d/KaVDD
+                                                busybox echo "VDD=/sys/devices/system/cpu/cpu0/cpufreq/vdd_levels" >> /system/etc/init.d/KaVDD
+                                                busybox echo "" >> /system/etc/init.d/KaVDD
+                                                busybox echo "\busybox echo '$FREQ $newvdd' > \$VDD" >> /system/etc/init.d/KaVDD
+                                                busybox echo "[*] Created new KaVDD in init.d folder"
+                                                busybox sleep 2
+                                                busybox clear
+                                        fi
+
+
+                                busybox chmod 0755 /system/etc/init.d/KaVDD
+                                ${supath}su -c "/sbin/busybox mount -o remount ro /system"
+                                busybox clear
+                                                                                                                                                 1696,1-8      79%
+                        fi
+                else
+                busybox clear
+                busybox echo "[E] $FREQ is an invalid frequency"
+                sleep 1
+                busybox echo "[*] Please try again"
+                sleep 2
+                busybox clear
+        fi
+done
+
+}
+                                                                                                                                                 1651,1-8      77%
+
+
+
+docpuchange()
+{
+
+	if [ $1!="" ]
+	then
+		${supath}su -c "echo \"$1\" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
+		echo "Applied $1 as CPU Governor"
+	else
+		echo "Invalid CPU Governor specified"
+	fi
+}
+
+docpumax()
+{
+
+        if [ $1!="" ]
+        then
+                ${supath}su -c "echo \"$1\" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
+                echo "Applied $1 as CPU Max Speed"
+        else
+                echo "Invalid CPU Max Speed" 
+        fi
+}
+
+docpumin()
+{
+        if [ $1!="" ]
+        then
+                ${supath}su -c "echo \"$1\" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq"
+                echo "Applied $1 as CPU Min Speed"
+        else                                                                                                                                  
+                echo "Invalid CPU Min Speed"
+        fi                                                                                                                                    
+}
+
+
+
+cpuchange3()
+{
+
+	echo "----------------------------------"
+	echo "|                                |"
+	echo "| Choose CPU Governor:           |"
+	echo "| 1) scary                       |"
+	echo "| 2) smartass                    |"
+	echo "| 3) smartassV2                  |"
+	echo "| 4) smartassH3                  |"
+	echo "| 5) smoothass                   |"
+	echo "| 6) userspace                   |"
+	echo "| 7) virtuous                    |"
+	echo "| 8) wheatley                    |"
+	echo "| b) Back                        |"
+	echo "| m) Main Menu                   |"
+	echo "|                                |"
+	echo "----------------------------------"
+        read -n 1 num
+        case $num in
+        	1) docpuchange "scary" ;;
+        	2) docpuchange "smartass" ;;
+		3) docpuchange "smartassV2" ;;
+		4) docpuchange "smartassH3" ;;
+		5) docpuchange "smoothass" ;;
+		6) docpuchange "virtuous" ;;
+		7) docpuchange "wheatley" ;;
+		b) cpuchange2;;
+		m) return;;
+	esac
+}
+
+cpuchange2()
+{
+
+	echo "----------------------------------"
+	echo "|                                |"
+	echo "| Choose CPU Governor:           |"
+	echo "| 1) lagfree                     |"
+	echo "| 2) ondemand                    |"
+	echo "| 3) performance                 |"
+	echo "| 4) powersave                   |"
+	echo "| p) Page 3 of CPU Governors     |"
+	echo "| b) Back                        |"
+	echo "| m) Main Menu                   |"
+	echo "|                                |"
+	echo "----------------------------------"
+        read -n 1 num
+        case $num in
+		1) docpuchange "lagfree" ;;
+		2) docpuchange "ondemand" ;;
+		3) docpuchange "performance" ;;
+		4) docpuchange "powersave" ;;
+		p) cpuchange3;;
+		b) cpuchange;;
+		m) return;;
+	esac
+}
+
+cpuchange()
+{
+
+	echo "----------------------------------"
+	echo "|                                |"
+	echo "| Choose CPU Governor:           |"
+	echo "| 1) conservative                |"
+	echo "| 2) darkside                    |"
+	echo "| 3) intellidemand               |"
+	echo "| 4) intellidemand2              |"
+	echo "| 5) interactive                 |"
+	echo "| 6) interactivex                |"
+	echo "| p) Page 2 of CPU Governors     |"
+	echo "| b) Back                        |"
+	echo "|                                |"
+	echo "----------------------------------"
+        read -n 1 num
+        case $num in
+		1) docpuchange "conservative" ;;
+		2) docpuchange "darkside" ;;
+		3) docpuchange "intellidemand" ;;
+		4) docpuchange "intellidemand2" ;;
+		5) docpuchange "interactive" ;;
+		6) docpuchange "interactivex" ;;
+		p) cpuchange2;;
+		m) cpuinfo;;
+	esac
+}
+
+
+speedm()
+{
+	FREQ_LIST=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies)
+	FREQ_ID=0
+
+	echo "----------------------------------"
+	echo "|                                |" 
+	echo "|  Change Max Speed to:          |" 
+	
+	for FREQ in $FREQ_LIST
+	do
+		FREQ_ID=$(( $FREQ_ID+1 ))
+		echo "|    $FREQ_ID) $FREQ      "
+	done
+	
+	echo "|    b) Back                     |"
+	echo "|                                |"
+	echo "----------------------------------"
+ 	echo "In this menu Enter key is needed!"	
+        read  num
+	ZEFREQ=$(echo $FREQ_LIST | cut -d" " -f$num)
+    	case $num in
+		1-25) docpumax "$ZEFREQ" ;;
+		b) cpuinfo;;
+	esac
+}
+
+speedn()
+{
+        FREQ_LIST=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies)
+        FREQ_ID=0
+                                                                                        
+        echo "----------------------------------"
+        echo "|                                |" 
+        echo "|  Change Min Speed to:          |"
+                              
+        for FREQ in $FREQ_LIST 
+        do
+                FREQ_ID=$(( FREQ_ID+1 ))
+                echo "|    $FREQ_ID) $FREQ     "
+	done
+
+        echo "|    b) Back                     |"                                                                                      
+        echo "|                                |"                                                                                      
+        echo "----------------------------------"                                                                                      
+        
+	echo "In this menu Enter key is needed!"
+        read  num                                                                                                                  
+        ZEFREQ=$(echo $FREQ_LIST | cut -d" " -f$num)
+        case $num in                                                                                                                   
+                1-25) docpumin "$ZEFREQ" ;;                                                                                            
+                b) cpuinfo;;                                                                                                           
+        esac                                                                                                                           
+}
+
+stickyboot()
+{
+       ${supath}su -c "/sbin/busybox mount -o remount,rw /system"                                                                            
+        if [ -e /system/etc/init.d/KaCPU ]; 
+	then
+                ${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaCPU"
+                echo "Sticky CPU settings disabled"
+        else                                                                                                                                  
+                
+		currgov=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
+        	currmaxspeed=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)
+	        currminspeed=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)
+
+		echo "#!/rek/sbin/busybox sh" > /system/etc/init.d/KaCPU
+		echo "PATH=$PATH:/system/bin/:/system/xbin/:/rek/sbin/" >> /system/etc/init.d/KaCPU
+		echo "" >> /system/etc/init.d/KaCPU
+		echo "echo \"$currminspeed\" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" >> /system/etc/init.d/KaCPU
+		echo "echo \"$currmaxspeed\" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" >> /system/etc/init.d/KaCPU
+		echo "echo \"$currgov\" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor" >> /system/etc/init.d/KaCPU
+
+                chmod +x /system/etc/init.d/KaCPU
+		echo "Sticky CPU Settings enabled"
+        fi
+        ${supath}su -c "/sbin/busybox mount -o remount,ro /system"                                                                            
+}
+
+
+cpuinfo()
+{
+	currgov=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
+	currmaxspeed=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)
+	currminspeed=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)
+	
+	stickyboot="Off"
+	if [ -e /system/etc/init.d/KaCPU ]
+	then
+		stickyboot="On"
+	else
+		stickyboot="Off"
+	fi
+	
+	echo "----------------------------------"
+	echo "                                 "
+	echo "  Current CPU Governor:          "
+	echo "              $currgov           "
+	echo "  Current Max Speed:             "
+	echo "              $currmaxspeed      "
+	echo "  Current Min Speed              "
+	echo "              $currminspeed      "
+	echo "  c) To change CPU Governor      "
+	echo "  m) To change Max Speed         " 
+	echo "  n) To change Min Speed         "
+	echo "  s) Stick on boot: $stickyboot" 
+	echo "  b) Main Menu                   "
+	echo "                                 "
+	echo "----------------------------------"
+        read -n 1 num
+        case $num in
+		c) cpuchange; cpuinfo;;
+		m) speedm; cpuinfo;;
+		n) speedn; cpuinfo;;
+		s) stickyboot; cpuinfo;;
+		b) return;;
+	esac
+}
+
+iochange()
+{
+	
+	echo "-----------------------------------"
+	echo "|                                 |"
+	echo "| Please choose an IO Scheduler:  |"
+	echo "| 1) BFQ                          |"
+	echo "| 2) CFQ                          |"
+	echo "| 3) SIO                          |"
+	echo "| 4) VR                           |"
+	echo "| 5) ZEN                          |"
+	echo "| 6) NOOP                         |"
+	echo "| 7) Deadline                     |"
+	echo "| 8) Row				|"
+	echo "| b) Back                         |"
+	echo "|                                 |"
+	echo "-----------------------------------"
+	read -n 1 num
+	case $num in
+        	1) ${supath}su -c "echo \"bfq\" > /sys/block/mmcblk0/queue/scheduler"; ioinfo;;
+        	2) ${supath}su -c "echo \"cfq\" > /sys/block/mmcblk0/queue/scheduler"; ioinfo;;
+        	3) ${supath}su -c "echo \"sio\" > /sys/block/mmcblk0/queue/scheduler"; ioinfo;;
+        	4) ${supath}su -c "echo \"vr\" > /sys/block/mmcblk0/queue/scheduler"; ioinfo;;
+        	5) ${supath}su -c "echo \"zen\" > /sys/block/mmcblk0/queue/scheduler"; ioinfo;;
+        	6) ${supath}su -c "echo \"noop\" > /sys/block/mmcblk0/queue/scheduler"; ioinfo;;
+        	7) ${supath}su -c "echo \"deadline\" > /sys/block/mmcblk0/queue/scheduler"; ioinfo;;
+		8) ${supath}su -c "echo \"row\" > /sys/block/mmcblk0/queue/scheduler"; ioinfo;; 
+        	b) ioinfo;;
+	esac
+}	                          	
+
+
+iostickyboot()
+{
+       ${supath}su -c "/sbin/busybox mount -o remount,rw /system"
+        if [ -e /system/etc/init.d/KaIO ];
+        then
+                ${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaIO"
+                echo "Sticky IO Scheduler Settings disabled"
+        else
+                currio=$(cat /sys/block/mmcblk0/queue/scheduler | grep  -oE '\[[a-zA-Z0-9]*\]' | tr -d "[]")
+		echo "#!/rek/sbin/busybox sh" > /system/etc/init.d/KaIO
+                echo "PATH=$PATH:/system/bin/:/system/xbin/:/rek/sbin/" >> /system/etc/init.d/KaIO
+                echo "" >> /system/etc/init.d/KaIO
+                echo "echo \"$currio\" > /sys/block/mmcblk0/queue/scheduler" >> /system/etc/init.d/KaIO
+
+                chmod +x /system/etc/init.d/KaIO
+                echo "Sticky IO Scheduler Settings enabled"
+        fi
+        ${supath}su -c "/sbin/busybox mount -o remount,ro /system"
+}
+
+ioinfo()
+{
+	currio=$(cat /sys/block/mmcblk0/queue/scheduler | grep  -oE '\[[a-zA-Z0-9]*\]' | tr -d "[]")
+	
+        stickyboot="Off"
+        if [ -e /system/etc/init.d/KaIO ]
+        then                                                                                                                                  
+                stickyboot="On"                                                                                                               
+        else
+                stickyboot="Off"
+        fi
+
+	echo "-----------------------------------"
+	echo "                                   "
+	echo "   Current IO Scheduler:           "
+	echo "            $currio                "
+	echo "                                   "
+	echo "   Choose an option:               "
+	echo "   c) Change IO Scheduler          "
+	echo "	 s) Stick on Boot: $stickyboot   "
+	echo "   b) Back                         "
+	echo "                                   "
+	echo "                                   "
+	echo "-----------------------------------"
+	
+	read -n 1 num
+	case $num in
+        	c) iochange; ioinfo;;
+        	b) return;;
+		s) iostickyboot; ioinfo;;
+	esac
+}
+
+drivers()
+{
+	checkstatus
+	echo "-----------------------------------"
+	echo "|                                 |"
+	echo "|  Drivers Management             |"
+
+	echo "|  1) Enable/Disable CIFS         |"
+
+	if [[ $cifsison = 1 ]]; then
+		echo "|        CIFS is on               |"
+	else
+		echo "|        CIFS is off              |"
+	fi
+	
+	echo "|  2) Enable/Disable NTF          |"
+	
+	if [[ $ntfsison = 1 ]]; then
+	        echo "|        NTFS is on               |"
+	else
+	        echo "|        NTFS is off              |"
+	fi
+	
+	echo "|  3) Enable/Disable Fuse         |"
+	
+	if [[ $fuseison = 1 ]]; then
+	        echo "|        FUSE is on               |"
+	else
+	        echo "|        FUSE is off              |"
+	fi
+
+	echo "|  4) Enable/Disable HFS+         |"
+
+	if [[ $hfsxison = 1 ]]; then
+			echo "|        HFS+ is on               |"
+	else
+			echo "|        HFS+ is off              |"
+	fi
+
+	echo "|  5) Enable/Disable OTG          |"
+
+	if [[ $otgison = 1 ]]; then
+			echo "|        OTG  is on               |"
+	else
+			echo "|        OTG  is off              |"
+	fi
+
+       echo "|  6) Enable/Disable USB2Serial          |"                                                                      
+                                                                                                                                       
+        if [[ $serison = 1 ]]; then                                                                                                    
+                        echo "|        U2S  is on               |"                                                                     
+        else                                                                                                                           
+                        echo "|        U2S  is off              |"                                                                     
+        fi                                                                                                                             
+ 
+	echo "|                                 |"
+	echo "|  b) Back                        |"
+	echo "|_________________________________|"
+	echo
+	read -n 1 num
+	case $num in
+        	1) cifs; drivers;;
+		2) ntfs; drivers;;
+		3) fuse; drivers;;
+		4) hfsx; drivers;;
+		5) otg; drivers;;
+		6) u2s; drivers;;
+		b) return;;
+	esac
+}
+
+enable_reset()
+{  
+        ${supath}su -c "/sbin/busybox mount -o remount,rw /system"  
+        if [ -e /system/etc/init.d/KaER ]  
+        then
+                ${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaER"  
+                echo "0" > /sys/power/keyreset/enable_reset 
+                echo "KEYRESET Disabled"
+        else
+                ${supath}su -c "/rek/sbin/busybox cp /rek/sbin/KaER /system/etc/init.d"
+                echo "1" > /sys/power/keyreset/enable_reset
+                echo "KEYRESET Enabled"
+        fi
+        ${supath}su -c "/sbin/busybox mount -o remount,ro /system"
+}
+
+adblock()
+{
+	${supath}su -c "/sbin/busybox mount -o remount,rw /system"
+	if [ -e /system/etc/init.d/KaDNS ]
+	then
+		${supath}su -c "/rek/sbin/busybox rm /system/etc/init.d/KaDNS"
+		echo "Adblock Disabled"
+	else
+		${supath}su -c "/rek/sbin/busybox cp /rek/sbin/KaDNS /system/etc/init.d"
+		echo "Adblock Enabled"
+	fi
+	${supath}su -c "/sbin/busybox mount -o remount,ro /system"
+}
+
+updadblock()
+{
+	${supath}su -c "/sbin/busybox mount -o remount,rw /system"
+	busybox wget "http://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&startdate%5Bday%5D=&startdate%5Bmonth%5D=&startdate%5Byear%5D=&mimetype=plaintext" -O /system/etc/adblock
+	${supath}su -c "/sbin/busybox mount -o remount,ro /system"
+	echo "Updated Adblock"
+}
+
+tweaks()
+{
+
+        if [ -e /system/etc/init.d/KaER ]
+        then
+		er="On "
+        else
+                er="Off"
+        fi
+
+        if [ -e /system/etc/init.d/KaDNS ]
+        then
+                dn="On " 
+        else
+                dn="Off"
+        fi
+
+        echo "-----------------------------------"
+        echo "|                                 |"
+        echo "|             Tweaks              |"
+        echo "|                                 |"
+        echo "|  1) Enable/Disable HOME+POWER   |"
+	echo "|     reset (keep pressed 3s)     |"
+	echo "|        Status is: $er           |"
+	echo "|  2) VDD Control                 |"
+	echo "|  3) Enable/Disable Adblock      |"
+	echo "|        Status is: $dn           |"
+	echo "|  4) Update Adblock              |"
+        echo "|  b) Return                      |"
+	echo "|                                 |"
+	echo "|                                 |"
+	echo "-----------------------------------"
+	read -n 1 num
+	case $num in
+		1) enable_reset; tweaks;;
+		2) selvdd; tweaks;;
+		3) adblock; tweaks;;
+		4) updadblock; tweaks;;
+                b) return;;
+	esac	
+}
+
+kamenu()
+{
+	echo "-----------------------------------"
+	echo "|                                 |"
+	echo "|            KaMenu               |"
+	echo "|                                 |"
+	echo "|  Please choose an option:       |"
+	echo "|                                 |"
+    	echo "|  1) Drivers Management          |"
+    	echo "|  2) CPU Management              |"
+    	echo "|  3) IO Scheduler Management     |"
+	echo "|  4) Tweaks                      |"
+	echo "|                                 |"
+	echo "|  q) Quit                        |"
+	echo "|_________________________________|"
+	echo
+
+	read -n 1 num
+	case $num in
+		1) drivers;;
+		2) cpuinfo;;
+		3) ioinfo;;
+	        4) tweaks;;
+		k) telnet aardmud.org;;
+	        q|Q) exit;;
+	        *) echo "$num is not a valid option"; sleep 3; clear;;
+	esac
+}
+
+cifsison=0
+ntfsison=0
+fuseison=0
+hfsxison=0
+otgison=0
+serison=0
+
+while [ 1 ]
+do
+	kamenu
+done
+

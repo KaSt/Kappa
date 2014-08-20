@@ -1,6 +1,44 @@
 #!/bin/bash
 
-cd /home/ka/build/Kappa
-ARCH=arm CROSS_COMPILE=/home/ka/build/linaro/android-toolchain-eabi/bin/arm-eabi-  make -j8
-echo "Done!"
+if [ ! -e kappa.config ]
+then
+	echo "Please create a kappa.config file in the repo dir."
+	echo "Check kappa.config.sample for pointers"
+	exit
+fi  
+
+source kappa.config
+
+if [ "$1" == "" ]
+then   
+        echo "Please provide the device name"
+        echo "Valid devices: smultron mango satsuma coconut"
+        exit
+fi
+
+
+echo "Building Kappa Kernel for ${1^}"
+export KAREL=`(cat configs/release)`
+
+BUILD_FILE=$KAPPA_HOME/configs/$1_build.txt
+if [ ! -e $BUILD_FILE ]; 
+then
+	echo "0" > $BUILD_FILE
+fi
+
+echo $((`cat $BUILD_FILE` + 1)) > $BUILD_FILE
+BUILD_NUMBER=$[`cat $BUILD_FILE`]
+
+cd $KAPPA_HOME
+CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER/bin/arm-eabi-  make -j8 
+CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER/bin/arm-eabi-  make -j8 modules
+
+if [ $? == 0 ]
+then
+	mkwifi
+	mkimg Ka${1^}$BUILD_NUMBER.img
+	echo "Done!"
+else
+	echo "Error in kernel compilation: halting"
+fi
 

@@ -1,0 +1,4 @@
+#!/rek/sbin/busybox sh
+PATH=$PATH:/system/bin/:/system/xbin/
+
+/rek/sbin/busybox insmod /rek/modules/usb-storage.ko

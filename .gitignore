@@ -130,3 +130,6 @@ scripts/kconfig/mconf
 include/linux/utsrelease.h
 firmware/*
 include/asm-arm/asm-offsets.h
+kappa-ka-ramdisk.img
+kappa.config
+
