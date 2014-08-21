@@ -33,14 +33,14 @@ cd $KAPPA_HOME/compat-wireless-wl12xx/
 find . -name wl12xx*.ko
 find . -name wl12xx*.ko | xargs -i cp {} $KAPPA_HOME/ramdisk/rek/modules/
 
-echo "./compat/compat_firmware_class.ko"
-cp ./compat/compat_firmware_class.ko $KAPPA_HOME/ramdisk/rek/modules/
-echo "./compat/compat.ko"
-cp ./compat/compat.ko $KAPPA_HOME/ramdisk/rek/modules/
-echo "./net/wireless/cfg80211.ko"
-cp ./net/wireless/cfg80211.ko $KAPPA_HOME/ramdisk/rek/modules/
-echo "./net/mac80211/mac80211.ko"
-cp ./net/mac80211/mac80211.ko $KAPPA_HOME/ramdisk/rek/modules/
+#echo "./compat/compat_firmware_class.ko"
+#cp ./compat/compat_firmware_class.ko $KAPPA_HOME/ramdisk/rek/modules/
+#echo "./compat/compat.ko"
+#cp ./compat/compat.ko $KAPPA_HOME/ramdisk/rek/modules/
+#echo "./net/wireless/cfg80211.ko"
+#cp ./net/wireless/cfg80211.ko $KAPPA_HOME/ramdisk/rek/modules/
+#echo "./net/mac80211/mac80211.ko"
+#cp ./net/mac80211/mac80211.ko $KAPPA_HOME/ramdisk/rek/modules/
 
 cd $KAPPA_HOME/ramdisk
 echo "Packaging Ramdisk"
