@@ -19,13 +19,13 @@ rm -fr $KAPPA_HOME/ramdisk/system/lib/*
 echo "Copying Kernel drivers into Ramdisk (/system/lib)"
 find . -name *.ko | grep -v compat-wireless-wl12xx | grep -v ramdisk 
 find . -name *.ko | grep -v compat-wireless-wl12xx | grep  -v ramdisk | xargs -i cp {} $KAPPA_HOME/ramdisk/system/lib/ 
-mv $KAPPA_HOME/ramdisk/system/lib/cifs.ko $KAPPA_HOME/ramdisk/rek/modules
-mv $KAPPA_HOME/ramdisk/system/lib/ntfs.ko $KAPPA_HOME/ramdisk/rek/modules
-mv $KAPPA_HOME/ramdisk/system/lib/fuse.ko $KAPPA_HOME/ramdisk/rek/modules
-mv $KAPPA_HOME/ramdisk/system/lib/hfsplus.ko $KAPPA_HOME/ramdisk/rek/modules
-mv $KAPPA_HOME/ramdisk/system/lib/usb-storage.ko $KAPPA_HOME/ramdisk/rek/modules
-#mv $KAPPA_HOME/ramdisk/system/lib/ext4.ko $KAPPA_HOME/ramdisk/rek/modules
-#mv $KAPPA_HOME/ramdisk/system/lib/jbd2.ko $KAPPA_HOME/ramdisk/rek/modules
+mv $KAPPA_HOME/ramdisk/system/lib/cifs.ko $KAPPA_HOME/ramdisk/rek/modules/
+mv $KAPPA_HOME/ramdisk/system/lib/ntfs.ko $KAPPA_HOME/ramdisk/rek/modules/
+mv $KAPPA_HOME/ramdisk/system/lib/fuse.ko $KAPPA_HOME/ramdisk/rek/modules/
+mv $KAPPA_HOME/ramdisk/system/lib/hfsplus.ko $KAPPA_HOME/ramdisk/rek/modules/
+mv $KAPPA_HOME/ramdisk/system/lib/usb-storage.ko $KAPPA_HOME/ramdisk/rek/modules/
+#mv $KAPPA_HOME/ramdisk/system/lib/ext4.ko $KAPPA_HOME/ramdisk/rek/modules/
+#mv $KAPPA_HOME/ramdisk/system/lib/jbd2.ko $KAPPA_HOME/ramdisk/rek/modules/
 
 
 echo "Copying Wifi drivers into Ramdisk (/system/lib/modules)"
