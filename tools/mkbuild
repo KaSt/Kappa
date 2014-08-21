@@ -35,7 +35,7 @@ CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER  make -j8 modul
 
 if [ $? == 0 ]
 then
-	mkwifi
+	#mkwifi
 	mkimg Ka${1^}$BUILD_NUMBER.img
 	echo "Done!"
 else

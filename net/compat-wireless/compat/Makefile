@@ -7,7 +7,6 @@ EXTRA_CFLAGS +=  \
         -DCOMPAT_VERSION="\"compat-wireless-2011-05-19-2-gfa00a5a\""
 
 obj-y += compat.o \
-         kstrtox.o \
          compat-2.6.39.o \
          compat-2.6.38.o \
          compat-2.6.37.o \
@@ -52,5 +51,4 @@ compat-$(CONFIG_COMPAT_KERNEL_2_6_36) += \
 compat-$(CONFIG_COMPAT_KERNEL_2_6_37) += compat-2.6.37.o
 compat-$(CONFIG_COMPAT_KERNEL_2_6_38) += compat-2.6.38.o
 compat-$(CONFIG_COMPAT_KERNEL_2_6_39) += \
-	compat-2.6.39.o \
-	kstrtox.o
+	compat-2.6.39.o 

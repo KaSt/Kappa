@@ -13,6 +13,7 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/string.h>
+#include <linux/rcupdate.h>
 #include <net/mac80211.h>
 #include "ieee80211_i.h"
 #include "mesh.h"
@@ -843,6 +844,6 @@ void mesh_path_expire(struct ieee80211_sub_if_data *sdata)
 void mesh_pathtbl_unregister(void)
 {
 	/* no need for locking during exit path */
-	mesh_table_free(rcu_dereference_raw(mesh_paths), true);
-	mesh_table_free(rcu_dereference_raw(mpp_paths), true);
+	mesh_table_free(rcu_dereference(mesh_paths), true);
+	mesh_table_free(rcu_dereference(mpp_paths), true);
 }
