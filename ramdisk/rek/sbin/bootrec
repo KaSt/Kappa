@@ -80,23 +80,23 @@ echo 1 > /sys/class/android_usb/android0/enable
 
 # Use frandom instead of stock ramdom/urandom
 # Maybe not now
-#busybox chmod 0666 /dev/frandom
-#busybox chmod 0666 /dev/erandom
-#busybox mv /dev/random /dev/random_old
-#busybox ln -s /dev/frandom /dev/random
-#busybox mv /dev/urandom /dev/urandom_old
-#busybox ln -s /dev/erandom /dev/urandom
-#cho "Done Frandom setup" >> /rek/logs/kaboot.txt
+busybox chmod 0666 /dev/frandom
+busybox chmod 0666 /dev/erandom
+busybox mv /dev/random /dev/random_old
+busybox ln -s /dev/frandom /dev/random
+busybox mv /dev/urandom /dev/urandom_old
+busybox ln -s /dev/erandom /dev/urandom
+echo "Done Frandom setup" >> /rek/logs/kaboot.txt
 
 # Use frandom Havege of stock ramdom/urandom                                                                                          
 # Maybe not now                                                                                                                        
-busybox mv /dev/random /dev/random_old                                                                                                
-busybox ln -s /dev/hrandom0 /dev/random                                                                                                
-busybox mv /dev/urandom /dev/urandom_old                                                                                              
-busybox ln -s /dev/hrandom0 /dev/urandom                                                                                               
-busybox chmod 0666 /dev/random
-busybox chmod 0666 /dev/urandom
-cho "Done Havege setup" >> /rek/logs/kaboot.txt   
+#busybox mv /dev/random /dev/random_old                                                                                                
+#busybox ln -s /dev/hrandom0 /dev/random
+#busybox mv /dev/urandom /dev/urandom_old                                                                                              
+#busybox ln -s /dev/hrandom0 /dev/urandom
+#busybox chmod 0666 /dev/random
+#busybox chmod 0666 /dev/urandom
+#echo "Done Havege setup" >> /rek/logs/kaboot.txt
 
 
 stop adbd
