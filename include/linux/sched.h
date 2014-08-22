@@ -1227,6 +1227,8 @@ struct task_struct {
 
 	int lock_depth;		/* BKL lock depth */
 
+	unsigned long stack_start;
+
 #ifdef CONFIG_SMP
 #ifdef __ARCH_WANT_UNLOCKED_CTXSW
 	int oncpu;
