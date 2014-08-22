@@ -131,4 +131,4 @@ firmware/*
 include/asm-arm/asm-offsets.h
 kappa-ka-ramdisk.img
 kappa.config
-
+ramdisk/rek/modules/*
