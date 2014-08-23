@@ -31,13 +31,16 @@ cd $KAPPA_HOME/net/compat-wireless/drivers/net/wireless/
 find . -name wl12xx*.ko
 find . -name wl12xx*.ko | xargs -i cp {} $KAPPA_HOME/ramdisk/rek/modules/
 
-cd $KAPPA_HOME/ramdisk
 echo "Packaging Ramdisk"
-rm kappa-ka-ramdisk.img
-find . | grep -v .git | cpio --quiet -H newc -o | gzip  > kappa-ka-ramdisk.img
+cd $KAPPA_HOME/ramdisk
+if [ -e ../kappa-ka-ramdisk.img ]
+then
+	rm ../kappa-ka-ramdisk.img
+fi
+find . | grep -v .git | cpio --quiet -H newc -o | gzip  > ../kappa-ka-ramdisk.img
 cd $KAPPA_HOME/bootimg 
 echo "Making image $1"
-mkbootimg --kernel ../arch/arm/boot/zImage --ramdisk kappa-ka-ramdisk.img --base 0x00200000 -o $1
+mkbootimg --kernel ../arch/arm/boot/zImage --ramdisk ../kappa-ka-ramdisk.img --base 0x00200000 -o $1
 ls -alrt $1
 echo "Finished"
 
