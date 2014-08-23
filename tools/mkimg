@@ -37,7 +37,7 @@ rm kappa-ka-ramdisk.img
 find . | grep -v .git | cpio --quiet -H newc -o | gzip  > kappa-ka-ramdisk.img
 cd $KAPPA_HOME/bootimg 
 echo "Making image $1"
-mkbootimg --kernel ../arch/arm/boot/zImage --ramdisk ../kappa-ka-ramdisk.img --base 0x00200000 -o $1
+mkbootimg --kernel ../arch/arm/boot/zImage --ramdisk kappa-ka-ramdisk.img --base 0x00200000 -o $1
 ls -alrt $1
 echo "Finished"
 
