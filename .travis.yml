@@ -9,7 +9,7 @@ install:
     - tar -xvjf linaro.tar.bz2
     # -- end
     # Prepare kappa.config file
-    - echo "KAPPA_HOME=" > "$PWD"
+    - echo "KAPPA_HOME=$PWD" > "$PWD/kappa.config"
     - echo "KAPPA_COMPILER="$PWD/android-toolchain-eabi/bin/arm-eabi-" >> "$PWD/kappa.config"
     - export PATH="$PWD/tools":$PATH
     - cd $HOME/Kappa
