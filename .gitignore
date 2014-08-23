@@ -133,4 +133,4 @@ kappa-ka-ramdisk.img
 kappa.config
 ramdisk/rek/modules/*.ko
 Makefile.opt
-
+release/*.img
