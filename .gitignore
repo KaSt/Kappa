@@ -32,7 +32,7 @@ modules.builtin
 *.lzo
 *.patch
 *.gcno
-/bootimg/*
+/bootimg/*.img
 *.rej
 *.orig
 *.bad
