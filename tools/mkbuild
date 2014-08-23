@@ -36,6 +36,14 @@ CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER  make -j8 modul
 if [ $? == 0 ]
 then
 	mkimg Ka${1^}$BUILD_NUMBER.img
+	if [ -e bootimg/Ka${1^}$BUILD_NUMBER.img ]
+	then
+		rm release/Ka${1^}*
+		cp $(ls bootimg/Ka${1^}*.img -1t | head -1) release/
+	else
+		echo "Build failed"
+		exit -1
+	fi
 	echo "Done!"
 	exit 0
 else
