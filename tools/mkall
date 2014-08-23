@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [ ! -e kappa.config ]
+then   
+        echo "Please create a kappa.config file in the repo dir."
+        echo "Check kappa.config.sample for pointers"
+        exit -1
+fi
+
+source kappa.config
+
 echo "Making them all"
 cd $KAPPA_HOME
 
@@ -7,7 +16,6 @@ echo "Applying Mango defconfig"
 mkdef mango
 echo "Making Mango"
 mkbuild mango
-
 
 echo "Applying Coconut defconfig"
 mkdef coconut
