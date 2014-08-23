@@ -29,23 +29,13 @@ mv $KAPPA_HOME/ramdisk/system/lib/usb-storage.ko $KAPPA_HOME/ramdisk/rek/modules
 
 
 echo "Copying Wifi drivers into Ramdisk (/system/lib/modules)"
-cd $KAPPA_HOME/compat-wireless-wl12xx/
+cd $KAPPA_HOME/net/compat-wireless/drivers/net/wireless/
 find . -name wl12xx*.ko
 find . -name wl12xx*.ko | xargs -i cp {} $KAPPA_HOME/ramdisk/rek/modules/
-
-#echo "./compat/compat_firmware_class.ko"
-#cp ./compat/compat_firmware_class.ko $KAPPA_HOME/ramdisk/rek/modules/
-#echo "./compat/compat.ko"
-#cp ./compat/compat.ko $KAPPA_HOME/ramdisk/rek/modules/
-#echo "./net/wireless/cfg80211.ko"
-#cp ./net/wireless/cfg80211.ko $KAPPA_HOME/ramdisk/rek/modules/
-#echo "./net/mac80211/mac80211.ko"
-#cp ./net/mac80211/mac80211.ko $KAPPA_HOME/ramdisk/rek/modules/
 
 cd $KAPPA_HOME/ramdisk
 echo "Packaging Ramdisk"
 rm ../kappa-ka-ramdisk.img
-#find . | grep -v .git | cpio --quiet -H newc -o | lzma -7 > ../kappa-ka-ramdisk.img 
 find . | grep -v .git | cpio --quiet -H newc -o | gzip  > ../kappa-ka-ramdisk.img
 cd $KAPPA_HOME/bootimg 
 echo "Making image $1"
