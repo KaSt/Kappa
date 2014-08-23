@@ -6,11 +6,13 @@ language:
 install:
     # Install linaro 4.7 android toolchain
     - cd $HOME
+    - # Show current path
+    - pwd
     - wget http://releases.linaro.org/14.01/components/android/toolchain/4.7/android-toolchain-eabi-4.7-2014.01-x86.tar.bz2 -O linaro.tar.bz2
     - tar -xvjf linaro.tar.bz2
     # -- end
     # Prepare kappa.config file
-    - echo "KAPPA_HOME=$HOME/Kappa" > "$HOME/KaSt/Kappa/kappa.config"
+    - echo "KAPPA_HOME=$HOME/KaSt/Kappa" > "$HOME/KaSt/Kappa/kappa.config"
     - echo "KAPPA_COMPILER=$HOME/android-toolchain-eabi/bin/arm-eabi-" >> "$HOME/KaSt/Kappa/kappa.config"
     - export PATH=$HOME/Kappa/tools:$PATH
     - cd $HOME/Kappa
