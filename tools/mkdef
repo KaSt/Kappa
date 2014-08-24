@@ -20,4 +20,4 @@ fi
 
 cd $KAPPA_HOME
 ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER  make ka_$1_defconfig
-
+echo ka_$1_defconfig > configs/current_config

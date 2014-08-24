@@ -18,6 +18,30 @@ fi
 
 
 echo "Building Kappa Kernel for ${1^}"
+
+if [ -e configs/current_config ]
+then
+	echo "Checking configuration consistency with requested build"
+	CURRENT_CONFIG=`(cat configs/current_config)`
+	if [  $CURRENT_CONFIG != "ka_$1_defconfig" ]
+	then
+		echo "Configured for another device than requested build."
+		echo "Stop"
+		exit -1
+	else
+		echo "Checking .config against default device config"
+		cmp .config configs/ka_$1_defconfig > /dev/null
+		if [ $? -eq 1 ]
+		then
+			echo "Current build config different from default device config."
+			echo "This is an experimental build"
+		else
+			echo "Current build config matches default device config. Safe to proceed"
+		fi
+	fi
+fi
+
+
 export KAREL=`(cat configs/release)`
 
 BUILD_FILE=$KAPPA_HOME/configs/$1_build.txt
