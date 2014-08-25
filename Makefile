@@ -221,8 +221,8 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 
 HOSTCC       = gcc
 HOSTCXX      = g++
-HOSTCFLAGS   =  -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
-HOSTCXXFLAGS = -O2
+HOSTCFLAGS   =  -Wmissing-prototypes -Wstrict-prototypes -O3 -fomit-frame-pointer
+HOSTCXXFLAGS = -O3
 
 # Decide whether to build built-in, modular, or both.
 # Normally, just do built-in.
@@ -327,8 +327,8 @@ MODFLAGS	= -DMODULE -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -ffast-ma
 CFLAGS_MODULE   = $(MODFLAGS)
 AFLAGS_MODULE   = $(MODFLAGS)
 LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds
-CFLAGS_KERNEL	= -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -ffast-math -fsingle-precision-constant -mtune=cortex-a8 -marm -march=armv7-a -mfpu=neon -ftree-vectorize -funroll-loops
-AFLAGS_KERNEL	=
+CFLAGS_KERNEL	= -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize
+AFLAGS_KERNEL	= -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize 
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
 
@@ -341,7 +341,7 @@ LINUXINCLUDE    := -Iinclude \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   :=  -Wundef -Wstrict-prototypes -Wno-trigraphs \
+KBUILD_CFLAGS   :=  -Wundef -Wstrict-prototypes -Wno-trigraphs -Wno-sizeof-pointer-memaccess \
 		   -Werror \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
