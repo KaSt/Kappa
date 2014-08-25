@@ -7,7 +7,7 @@ PATH=$PATH:/system/bin/:/system/xbin/
 #fi
 cp /rek/res/resolv.conf /system/etc/resolv.conf
 
-if [  -e /system/etc/adblock ]
+if [  -e /system/etc/adblock ];
 then
 	ADBLOCK=/system/etc/adblock
 else

@@ -17,7 +17,7 @@ echo "[*] dnsmasq activation" >> /rek/logs/initdlog.txt
 cp /rek/sbin/KaDNS /system/etc/init.d
 
 echo "[*] UKSM activation" >> /rek/logs/initdlog.txt
-/rek/sbin/busybox if [ ! -e /system/etc/init.d/KaUKS ]
+if [ ! -e /system/etc/init.d/KaUKS ];
 then
 	/rek/sbin/busybox cp /rek/sbin/KaUKS /system/etc/init.d
 fi
