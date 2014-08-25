@@ -50,15 +50,15 @@ then
 	echo "0" > $BUILD_FILE
 fi
 
-echo $((`cat $BUILD_FILE` + 1)) > $BUILD_FILE
-BUILD_NUMBER=$[`cat $BUILD_FILE`]
-
 cd $KAPPA_HOME
 CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER  make -j8 
 CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER  make -j8 modules
 
 if [ $? == 0 ]
 then
+	echo $((`cat $BUILD_FILE` + 1)) > $BUILD_FILE
+	BUILD_NUMBER=$[`cat $BUILD_FILE`]
+
 	mkimg Ka${1^}$BUILD_NUMBER.img
 	if [ -e bootimg/Ka${1^}$BUILD_NUMBER.img ]
 	then
