@@ -223,6 +223,13 @@ config CPU_FREQ_DEFAULT_GOV_BOOSTED
 	help
 	 Use the CPUFreq governor Boosted, a smarter SmartassV2
 
+config CPU_FREQ_DEFAULT_GOV_SMARTMAX
+	bool "smartmax"
+	select CPU_FREQ_GOV_SMARTMAX
+	help
+	  Use the CPUFreq governor 'smartmax' as default
+
+
 endchoice 
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -441,6 +448,12 @@ config CPU_FREQ_GOV_HYBRID
 config CPU_FREQ_GOV_BOOSTED
 	tristate "'boosted(smartass v2)' cpufreq policy governor"
 	select CPU_FREQ_TABLE
+
+config CPU_FREQ_GOV_SMARTMAX
+	tristate "'smartmax' cpufreq policy governor"
+	select CPU_FREQ_TABLE
+	help
+	  'smartmax' combined ondemand and smartass2
 
 config CPU_FREQ_MIN_TICKS
 	int "Ticks between governor polling interval."
