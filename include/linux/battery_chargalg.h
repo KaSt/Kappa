@@ -73,6 +73,8 @@ struct battery_chargalg_platform_data {
 	size_t num_supplicants;
 
 	u16 overvoltage_max_design; /* mV */
+	struct battery_regulation_vs_temperature *id_bat_reg;
+        struct battery_regulation_vs_temperature *unid_bat_reg;
 	u8 ext_eoc_recharge_enable;
 	u8 recharge_threshold_capacity; /* % */
 	u16 eoc_current_term; /* mA */
