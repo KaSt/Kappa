@@ -18,6 +18,9 @@ fi
 
 
 echo "Building Kappa Kernel for ${1^}"
+echo "Using Toolchain: $KAPPA_COMPILER"
+echo "--------------------------------"
+echo ""
 
 if [ -e configs/current_config ]
 then
