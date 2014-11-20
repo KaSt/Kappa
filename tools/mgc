@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ "$1" == "" ]                                                                                                                                                     
+then                                                                                                                                                                  
+        echo "Please provide a patch URL"                                                                                                                             
+        exit -1                                                                                                                                                       
+fi
+
+if [ -e /tmp/patch_list ] 
+then
+	rm /tmp/patch_list
+fi
+
+patches=$(curl -is "$1")
+prev_patch=""
+next=$(curl -Is "$1" | grep -Po '"Link":.*?[^\\]",')
+curl -s "$1" | grep html_url | grep commit | cut -d'"' -f4 > /tmp/patch_list
+
+tac /tmp/patch_list | while read -r line ; do
+	if [ "$prev_patch" != "$line" ]
+	then 
+		gc $line 2>/dev/null
+	fi
+	prev_patch=$line
+done
+
+
+#echo $next
+#echo $commits
+

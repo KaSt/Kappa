@@ -20,7 +20,7 @@ then
 	rm /tmp/p.patch 
 fi
 
-wget -r $patch -O /tmp/p.patch
+wget --quiet -r $patch -O /tmp/p.patch 
 
 if [ ! -e /tmp/p.patch  -o $? != 0 ]
 then
@@ -28,7 +28,9 @@ then
 	exit -2
 fi
 
-git apply --check /tmp/p.patch
+patch_title=$(cat /tmp/p.patch | grep Subject: | cut -d':' -f2-)
+echo "Tying to apply patch: $patch_title"
+git apply --check /tmp/p.patch 2>/dev/null
 
 if [ $? != 0 ] 
 then
