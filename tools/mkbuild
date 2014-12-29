@@ -59,6 +59,11 @@ CONFIG_CC_OPTIMIZE_ALOT=y ARCH=arm CROSS_COMPILE=$KAPPA_COMPILER  make -j8
 
 if [ $? == 0 ]
 then
+	if [ -e ramdisk/rek/build ]
+	then
+		rm ramdisk/rek/build
+	fi
+	echo $KAREL-$((`cat $BUILD_FILE` + 1)) > ramdisk/rek/build
 	echo $((`cat $BUILD_FILE` + 1)) > $BUILD_FILE
 	BUILD_NUMBER=$[`cat $BUILD_FILE`]
 

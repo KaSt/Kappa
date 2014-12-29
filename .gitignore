@@ -136,4 +136,5 @@ ramdisk/rek/modules/*.ko
 Makefile.opt
 release/*.img
 configs/current_config
+ramdisk/rek/build
 
