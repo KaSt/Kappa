@@ -15,6 +15,12 @@ then
 	patch="$1.patch"
 fi
 
+if [[ "$1" == *"kernel.org"* ]] && [[ "$1" == *"commit"* ]]
+then
+	patch="$1"
+	patch=${patch/commit/patch}
+fi
+
 if [ -e /tmp/p.patch ] 
 then
 	rm /tmp/p.patch 
