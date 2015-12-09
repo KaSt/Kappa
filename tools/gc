@@ -10,7 +10,7 @@ fi
 
 patch=$1
 
-if [[ "$1" != "*.patch" ]]
+if [[ "$1" != "*.patch" ]] && [[ "$1" == *"github"* ]]
 then
 	patch="$1.patch"
 fi
